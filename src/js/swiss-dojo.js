@@ -8,9 +8,9 @@
 	//FIXME - can't figure out how to programatically get version
 	swissRegister("dojo","_FIXME_",
 	{
-		find:function(scope,selector,context)
+		find:function(results,selector,context)
 		{
-			var results = dojo.query(selector);
+			var r = dojo.query(selector);
 		},
 		attr:function(el,name,value)
 		{

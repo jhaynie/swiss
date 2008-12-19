@@ -18,7 +18,7 @@
 
 	swissRegister("prototype", Prototype.Version,
 	{
-		find:function(scope,selector,context)
+		find:function(results,selector,context)
 		{
 			// prototype takes a normal string and uses
 			// $ for element lookup, for selectors it uses
@@ -26,16 +26,16 @@
 			var match = idExpr.exec(selector);
 			if (match && match.length == 2)
 			{
-				scope($(match[1]));
+				results.push($(match[1]));
 				return;
 			}
 			//TODO: context
-			var results = $$(selector);
-			if (results)
+			var r = $$(selector);
+			if (r)
 			{
-				for (var c=0;c<results.length;c++)
+				for (var c=0;c<r.length;c++)
 				{
-					scope(results[c]);
+					results.push(r[c]);
 				}
 			}
 		},

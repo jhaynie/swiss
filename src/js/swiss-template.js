@@ -7,16 +7,46 @@
 {
 	swissRegister("name","version",
 	{
-		find:function(scope,selector,context)
+		find:function(results,selector,context)
 		{
 		},
 		attr:function(el,name,value)
+		{
+		},
+		removeAttr: function(el,name)
 		{
 		},
 		css:function(el,name,value)
 		{
 		},
 		html:function(el,content)
+		{
+		},
+		effect:function(el,name,params)
+		{
+		},
+		ajax:function(params)
+		{
+		},
+		toJSON:function(el)
+		{
+		},
+		evalJSON:function()
+		{
+		},
+		onload:function(fn)
+		{
+		},
+		onunload:function(fn)
+		{
+		},
+		fire:function(el,name,params)
+		{
+		},
+		on:function(el,name,params,fn)
+		{
+		},
+		un:function(el,name,fn)
 		{
 		}
 	});

@@ -9,10 +9,15 @@
 	<div id="foo">hello</div>
 	<div id="blah"></div>
 	<div id="jeff"></div>
+	<div id="json">json should be here</div>
+	<div id="swiss"></div>
 	<script>
+		swiss("h1").html(swiss.library.name+" "+swiss.library.version);
+		swiss("#swiss").html("swiss version: "+swiss.version);
 		swiss("#foo").attr("bar","jeff").css("border","1px solid red");
 		swiss("#blah").html(swiss("#foo").attr("bar"));
 		swiss("#jeff").html(swiss("#foo").html());
+		swiss("#json").html(swiss.toJSON({"hello":"world"}));
 	</script>
 </body>
 </html>

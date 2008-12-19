@@ -3,105 +3,278 @@
  * see LICENSE in the root folder for details on the license. 
  * Copyright (c) 2008 Appcelerator, Inc. All Rights Reserved.
  */
-(function()
+;(function()
 {
-	var adapter, name, version;
-	var knife = function(args)
+	try
 	{
-		this.version = "0.1";
-		this.library = 
+		var adapter;
+		var swiss = window.swiss = function()
 		{
-			name: name,
-			version: version
-		};
-		this.length = 0;
-		var results = null;
-		var self = this;
-		function addResult(r)
-		{
-			if (!results) results=[];
-			results.push(r);
-			self.length = results.length;
-		}
-		this.get = function(idx)
-		{
-			return results ? results[idx] : null;
-		};
-		this.attr = function(name,value)
-		{
-			if (typeof(value)=='undefined')
+			if (adapter == null && arguments.length > 0)
 			{
-				return adapter.attr(results[0],name,value);
+				throw "swiss: no adapter registered, not very useful right now";
 			}
-			adapter.attr(results[0],name,value);
-			return this;
+			return new swiss.knife.init(arguments);
 		};
-		this.css = function(name,value)
+		swiss.knife = swiss.prototype = 
 		{
-			if (typeof(value)=='undefined')
+			version: "0.1",
+			length:0,
+			results:null,
+			init: function(args)
 			{
-				return adapter.css(results[0],name,value);
-			}
-			adapter.css(results[0],name,value);
-			return this;
-		};
-		this.find = function(selector,context)
-		{
-			adapter.find(addResult,selector,context);
-			return this;
-		};
-		this.html = function(content)
-		{
-			if (typeof(content)=='undefined')
-			{
-				return adapter.html(results[0]);
-			}
-			adapter.html(results[0],content);
-			return this;
-		}
-		this.toString = function()
-		{
-			return '[swiss <'+(results ? results.length : 0)+'>]';
-		}
-		var arg1 = args[0];
-		if (arg1)
-		{
-			switch(typeof(arg1))
-			{
-				case 'string':
+				if (args.length == 0) return this;
+				var arg1 = args[0];
+				if (arg1)
 				{
-					return this.find.apply(this,args);
-				}
-				case 'function':
-				{
-					return this.onload.apply(this,args);
-				}
-				case 'object':
-				{
-					// object is a DOM element
-					if ( arg1.nodeType ) 
+					switch(typeof(arg1))
 					{
-						addResult(arg1);
-						return this;
+						case 'string':
+						{
+							return this.find.apply(this,args);
+						}
+						case 'function':
+						{
+							return this.onload.apply(this,args);
+						}
+						case 'object':
+						{
+							// object is a DOM element
+							if ( arg1.nodeType ) 
+							{
+								return this.setResults([arg1]);
+							}
+						}
 					}
 				}
+				return this;
+			},
+			get: function(idx)
+			{
+				return this.results ? this.results[idx] : null;
+			},
+			setResults:function(r)
+			{
+				if (r && r.length > 0)
+				{
+					// faster push from jQuery
+					this.length = 0;
+					this.results = r;
+				}
+				return this;
+			},
+			// -- CSS/ATTRIBUTES
+			attr: function(name,value)
+			{
+				if (typeof(value)=='undefined')
+				{
+					return adapter.attr(this.results[0],name,value);
+				}
+				adapter.attr(this.results[0],name,value);
+				return this;
+			},
+			removeAttr: function(name)
+			{
+				adapter.removeAttr(this.results[0],name);
+				return this;
+			},
+			hasAttr: function(name)
+			{
+				var value = adapter.attr(name);
+				return (value && value!='');
+			},
+			css: function(name,value)
+			{
+				if (typeof(value)=='undefined')
+				{
+					return adapter.css(this.results[0],name,value);
+				}
+				adapter.css(this.results[0],name,value);
+				return this;
+			},
+			hasClass: function(name)
+			{
+				var value = adapter.css('class');
+				if (value)
+				{
+					var tokens = value.split(' ');
+					for (var c=0;c<tokens.length;c++)
+					{
+						if (tokens[c]==name)
+						{
+							return true;
+						}
+					}
+				}
+				return false;
+			},
+			addClass: function(name)
+			{
+				var value = adapter.css('class');
+				if (!value)
+				{
+					adapter.css('class',name);
+					return this;
+				}
+				value = value + ' '+name;
+				adapter.css('class',value);
+				return this;
+			},
+			removeClass: function(name)
+			{
+				var value = adapter.css('class');
+				if (value)
+				{
+					var newtokens = [];
+					var tokens = value.split(' ');
+					for (var c=0;c<tokens.length;c++)
+					{
+						if (tokens[c]!=name)
+						{
+							newtokens.push(tokens[c]);
+						}
+					}
+					adapter.css('class',newtokens.join(' '));
+				}
+				return this;
+			},
+			show: function()
+			{
+				adapter.css(this.results[0],'display','');
+				return this;
+			},
+			hide: function()
+			{
+				adapter.css(this.results[0],'display','none');
+				return this;
+			},
+			// --- SELECTOR
+			find: function(selector,context)
+			{
+				var r = [];
+				adapter.find(r,selector,context);
+				return this.setResults(r);
+			},
+			// --- HTML
+			html: function(content)
+			{
+				if (typeof(content)=='undefined')
+				{
+					return adapter.html(this.results[0]);
+				}
+				adapter.html(this.results[0],content);
+				return this;
+			},
+			// --- ANIMATIONS
+			effect: function(name,params)
+			{
+				adapter.effect(this.results[0],name,params);
+				return this;
+			},
+			// --- AJAX
+			ajax: function(params)
+			{
+				adapter.ajax(params);
+				return this;
+			},
+			// --- JSON
+			toJSON: function(value)
+			{
+				var object = value || this.results[0];
+				if (adapter.toJSON)
+				{
+					return adapter.toJSON(object);
+				}
+				var type = typeof object;
+				switch (type) {
+				  case 'undefined':
+				  case 'function':
+				  case 'unknown': return 'null';
+				  case 'number':
+				  case 'boolean': return value;
+				  case 'string': return "\""+value+"\"";
+				}
+
+				if (object === null) return 'null';
+				if (object.toJSON) return object.toJSON();
+				if (object.nodeType == 1) return 'null';
+
+				var objects = [];
+
+				for (var property in object) 
+				{
+				   var value = object[property];
+				   if (value !== undefined)
+				   {
+				   	  objects.push(this.toJSON(property) + ': ' + this.toJSON(value));
+				   }
+				}
+				return '{' + objects.join(', ') + '}';
+			},
+			evalJSON: function(value)
+			{
+				var object = value || this.results[0];
+				if (adapter.evalJSON)
+				{
+					return adapter.evalJSON(object);
+				}
+				try
+				{
+					return eval('(' + object + ')')
+				}
+				catch (E)
+				{
+					return null;
+				}
+			},
+			// --- ONLOAD/UNLOAD
+			onload: function(fn)
+			{
+				adapter.onload(fn);
+				return this;
+			},
+			onunload: function(fn)
+			{
+				adapter.onunload(fn);
+				return this;
+			},
+			// --- EVENTS 
+			fire: function(evt,params)
+			{
+				adapter.fire(this.results[0],evt,params);
+				return this;
+			},
+			on: function(name,params,fn)
+			{
+				adapter.on(this.results[0],name,params,fn);
+				return this;
+			},
+			un: function(name,fn)
+			{
+				adapter.un(this.results[0],name,fn);
+				return this;
+			},
+			toString: function()
+			{
+				return '[swiss <'+(this.results ? this.results.length : 0)+'>]';
 			}
-		}
-		return this;
-	};
-	window.swiss = function()
-	{
-		if (adapter == null)
+		};
+		swiss.knife.init.prototype = swiss.knife;
+		var statics = ['version','toJSON','evalJSON'];
+		for (var c=0;c<statics.length;c++)
 		{
-			throw "swiss: no adapter registered, not very useful right now";
+			var name = statics[c];
+			swiss[name]=swiss.knife[name];
 		}
-		return new knife(arguments);
+		window.swissRegister = function(n,v,impl)
+		{
+			adapter = impl;
+			swiss.library = {name:n,version:v};
+		};
 	}
-	window.swissRegister = function(n,v,impl)
+	catch (E)
 	{
-		adapter = impl;
-		name = n;
-		version = v;
-	};
+		alert("Error in Swiss: "+E);
+	}
 })();
 

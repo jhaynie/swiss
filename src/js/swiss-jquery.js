@@ -5,14 +5,14 @@
  */
 (function(swiss)
 {
-	swissRegister("jquery",jquery.jquery,
+	swissRegister("jquery",jQuery(document).jquery,
 	{
-		find:function(scope,selector,context)
+		find:function(results,selector,context)
 		{
 			var result = jQuery(selector,context);
 			for (var c=0;c<result.length;c++)
 			{
-				scope(result.get(c));
+				results.push(result.get(c));
 			}
 			return this;
 		},
@@ -23,6 +23,10 @@
 				return jQuery(el).attr(name);
 			}
 			return jQuery(el).attr(name,value);
+		},
+		removeAttr: function(el,name)
+		{
+			return jQuery(el).removeAttr(name);
 		},
 		css:function(el,name,value)
 		{
@@ -39,6 +43,32 @@
 				return jQuery(el).html();
 			}
 			jQuery(el).html(content);
+		},
+		effect:function(el,name,params)
+		{
+		},
+		ajax:function(params)
+		{
+		},
+		onload:function(fn)
+		{
+			return jQuery(fn);
+		},
+		onunload:function(fn)
+		{
+			return jQuery(window).unload(fn);
+		},
+		fire:function(el,name,params)
+		{
+			return jQuery(el).trigger(name,params);
+		},
+		on:function(el,name,params,fn)
+		{
+			return jQuery(el).bind(name,params,fn);
+		},
+		un:function(el,name,fn)
+		{
+			return jQuery(el).unbind(name,fn);
 		}
 	});
 })(window.swiss);
