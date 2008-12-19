@@ -1,0 +1,70 @@
+Swiss JS
+========
+
+Swiss JS is a Javascript Framework Framework.  
+
+It's usefulness is mainly for higher-level framework developers who want to support
+multiple JS frameworks with their applications or components.  Beyond that, it 
+adds an extra layer of abstraction that you may not want for yoru application if you've
+chosen a specific library and you love it.  However, if you'd like to have support
+for multiple libraries or you'd like to have a shield in your application - Swiss 
+might just do the job for you.
+
+Right now, it's in early initial development and not ready for prime time.
+
+Here's how you'd use it:
+
+<html>
+<head>
+<script src="jquery.js" type="text/javascript"></script>
+<script src="swiss.js" type="type/javascript"></script>
+<script src="swiss-jquery.js" type="text/javascript"></script>
+</head>
+<body>
+	<div id="foo"></div>
+	<script>
+		swiss("#foo").html("hello,world").css("border","1px solid red");
+	</script>
+</body>
+<html>
+
+
+Swiss works through a tiny adapter for each framework.  The adapter knows how to 
+take swiss API calls and adapt them to the respective framework and return 
+swiss-style results.
+
+
+We're not going to try and provide full abstraction for every feature in all 
+JS frameworks. That would defeat the purpose of Swiss.  However, we're going to 
+try and provide common JS functionality such as:
+
+- Ajax
+- CSS / Attributes
+- Element / Selectors
+- Animations
+- Onload / Unload
+- Events
+
+
+Acknowledgements
+================
+
+- Mainly, the JS frameworks themselves.  For all the wonderful variations of 
+code that our community keeps asking us to support!
+
+- John Resig and JQuery for the stylistic design we are adopting for swiss
+
+- Ivo Beckers for his constant prompting for this functionality in Appcelerator
+
+- Microsoft for it's completely horrid implementation of Web Standards such as 
+HTML and CSS and its ability to innovate - making JS frameworks more important than ever.
+
+
+Swiss is free and open source.  You can use it in your projects - commercial or free.
+Swiss licensed under the Apache Public License, version 2.
+Swiss is copyright (c) 2008 by Appcelerator, Inc. All Rights Reserved.
+
+
+
+If you would like to contribute to Swiss, please email <jhaynie@appcelerator.com>.
+

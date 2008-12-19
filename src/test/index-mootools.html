@@ -1,0 +1,19 @@
+<html>
+<head>
+<script type="text/javascript" charset="utf-8" src="../lib/mootools.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/swiss.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/swiss-mootools.js"></script>
+</head>
+<body>
+	<h1>Not much here yet</h1>
+	<div id="foo">hello</div>
+	<div id="blah"></div>
+	<div id="jeff"></div>
+	<script>
+		swiss("#foo").attr("bar","jeff").css("border","1px solid red");
+		swiss("#blah").html(swiss("#foo").attr("bar"));
+		swiss("#jeff").html(swiss("#foo").html());
+	</script>
+</body>
+</html>
+
