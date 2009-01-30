@@ -5,18 +5,7 @@
  */
 (function(swiss)
 {
-	/** 
-	 * From HTML4 spec:
-	 *
-	 * ID and NAME tokens must begin with a letter ([A-Za-z]) and may be 
-	 * followed by any number of letters, digits ([0-9]), hyphens ("-"), 
-	 * underscores ("_"), colons (":"), and periods ("."). 
-	 * 
-	 * we loosely follow since a lot of people don't start with letter
-	 */
-	var idExpr = /^#([\w\.-\:_]+)$/;
-
-	swissRegister("prototype", Prototype.Version,
+	swissRegister("name", "version",
 	{
 		find:function(results,selector,context)
 		{
@@ -39,6 +28,31 @@
 				}
 			}
 		},
+		each:function(array,callback)
+		{
+		},
+		extend:function(defaults,arguments)
+		{
+		  return Object.extend(defaults, arguments);
+		},
+		appendElement:function(el,el2)
+		{
+		},
+		prependElement:function(el,el2)
+		{
+		},
+		appendHTML:function(el,html)
+		{
+		},
+		prependHTML:function(el,html)
+		{
+		},
+		insertHTMLAfter:function(el,html)
+		{
+		},
+		insertHTMLBefore:function(el,html)
+		{
+		},
 		attr:function(el,name,value)
 		{
 			if (typeof(value)=='undefined')
@@ -46,6 +60,18 @@
 				return Element.readAttribute(el,name);
 			}
 			return Element.writeAttribute(el,name,value);
+		},
+		removeAttr:function(el,name)
+		{
+		},
+		hasClass:function(el,name)
+		{
+		},
+		addClass:function(el,name)
+		{
+		},
+		removeClass:function(el,name)
+		{
 		},
 		css:function(el,name,value)
 		{
@@ -64,6 +90,80 @@
 				return el.innerHTML;
 			}
 			return Element.update(el,content);
+		},
+		ajax:function(params)
+		{ 
+  		new Ajax.Request(params['url'], {
+    		method: params['method'],
+    		requestHeaders: params['headers'],
+    		postBody: params['data'],
+    		onSuccess: function(xhr){
+      			params['success'](xhr.responseText);
+    		},
+    		onFailure: function(xhr){
+      			params['error'](xhr);
+    		}
+  		});
+		},
+		toJSON:function(o)
+		{
+			Object.toJSON(o);
+		},
+		onload:function(fn)
+		{
+			document.observe('contentloaded', fn);
+		},
+		onunload:function(fn)
+		{
+			document.observe('beforeunload', fn);
+		},
+		fire:function(el,name,params)
+		{
+			$(el).fire(name, params);
+		},
+		on:function(el,name,params,fn)
+		{	
+			$(el).observe(name, fn);
+		},
+		un:function(el,name,fn)
+		{
+			$(el).stopObserving(name, fn);
+		},
+		toArray:function(value)
+		{
+		},
+		draggable:function(el,options)
+		{
+		},
+		sortable:function(el,options)
+		{
+		},
+		droppable:function(el,options)
+		{
+		},
+		selectable:function(el,options)
+		{
+		},
+		resizable:function(el,options)
+		{
+		},
+		effect:function(el,effect,options)
+		{
+		},
+		isUIEffect:function(effect)
+		{
+		},
+		isHideEffect:function(effect)
+		{
+		},
+		formatEffectOptions:function(effect,options)
+		{
+		},
+		height:function(el)
+		{
+		},
+		width:function(el)
+		{
 		}
 	});
 })(window.swiss);

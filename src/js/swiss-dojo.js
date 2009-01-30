@@ -5,20 +5,92 @@
  */
 (function(swiss)
 {
-	//FIXME - can't figure out how to programatically get version
-	swissRegister("dojo","_FIXME_",
+	swissRegister("dojo",dojo.version,
 	{
 		find:function(results,selector,context)
 		{
-			var r = dojo.query(selector);
+			var result = dojo.query(selector);
+			for (var c=0;c<result.length;c++)
+			{
+				results.push(result[c]);
+			}
+			return this;
 		},
 		attr:function(el,name,value)
 		{
+			if(value)
+			{
+				dojo.attr(node, name, value);
+			}
+			else
+			{
+				return dojo.attr(node, name);
+			}
 		},
-		css:function(el,name,value)
+		removeAttr: function(el,name)
+		{
+			dojo.removeAttr(el, name);
+		},
+		css:function(el,params1,params2)
+		{
+			if (typeof(params1)=='object')
+			{
+				dojo.style(el, params1);
+			}
+			else
+			{
+				dojo.style(el, params1, params2);
+			}
+		},
+		html:function(el, content)
+		{
+			if (typeof(content)=='undefined')
+			{
+				return el.innerHTML;
+			}
+			dojo.query(el)[0].innerHTML = content;
+		},
+		effect:function(el,name,params)
+		{
+			dojo.style(name, params);
+		},
+		ajax:function(params)
+		{
+		  dojo.xhr(method: params['method'],
+		      args: {
+            url: params['url'],
+            headers: params['headers'],
+            content: params['data']
+            load: function(data, ioArgs){
+              params['success'](data);
+            },
+            error: function(data, ioArgs){
+              params['error'](ioArgs.xhr);
+            }
+          },
+          hasBody: (params['method'].toUpperCase() === 'POST'
+              || params['method'].toUpperCase() === 'PUT')
+      );
+		},
+		toJSON:function(o)
+		{
+			dojo.toJson(o);
+		},
+		onload:function(fn)
+		{
+			dojo.addOnLoad(fn);
+		},
+		onunload:function(fn)
 		{
 		},
-		html:function(el,content)
+		fire:function(el,name,params)
+		{
+		},
+		on:function(el,name,params,fn)
+		{
+			dojo.event.connect(el, name, 'helloPressed')
+		},
+		un:function(el,name,fn)
 		{
 		}
 	});

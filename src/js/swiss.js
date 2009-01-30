@@ -21,6 +21,7 @@
 			version: "0.1",
 			length:0,
 			results:null,
+			
 			init: function(args)
 			{
 				if (args.length == 0) return this;
@@ -39,16 +40,13 @@
 						}
 						case 'object':
 						{
-							// object is a DOM element
-							if ( arg1.nodeType ) 
-							{
-								return this.setResults([arg1]);
-							}
+							return this.setResults([arg1]);
 						}
 					}
 				}
 				return this;
 			},
+			
 			get: function(idx)
 			{
 				return this.results ? this.results[idx] : null;
@@ -63,7 +61,6 @@
 				}
 				return this;
 			},
-			// -- CSS/ATTRIBUTES
 			attr: function(name,value)
 			{
 				if (typeof(value)=='undefined')
@@ -73,6 +70,34 @@
 				adapter.attr(this.results[0],name,value);
 				return this;
 			},
+			appendElement: function(el)
+			{
+				adapter.appendElement(this.results[0],el);
+			},
+			prependElement: function(el)
+			{
+				adapter.prependElement(this.results[0],el);
+			},	
+			appendHTML: function(html)
+			{
+				adapter.appendHTML(this.results[0],html);
+			},
+			prependHTML: function(html)
+			{
+				adapter.prependHTML(this.results[0],html);
+			},
+			insertHTMLBefore: function(html)
+			{
+				adapter.insertHTMLBefore(this.results[0],html);
+			},
+			insertHTMLAfter: function(html)
+			{
+				adapter.insertHTMLAfter(this.results[0],html);
+			},
+			remove: function()
+			{
+				this.results[0].parentNode.removeChild(this.results[0])
+			},
 			removeAttr: function(name)
 			{
 				adapter.removeAttr(this.results[0],name);
@@ -80,73 +105,57 @@
 			},
 			hasAttr: function(name)
 			{
-				var value = adapter.attr(name);
+				var value = adapter.attr(this.results[0],name);
 				return (value && value!='');
 			},
 			css: function(name,value)
 			{
 				if (typeof(value)=='undefined')
 				{
-					return adapter.css(this.results[0],name,value);
+					return adapter.css(this.results[0], name);
 				}
-				adapter.css(this.results[0],name,value);
+				adapter.css(this.results[0], name, value);
 				return this;
+			},
+			height: function()
+			{
+				return adapter.height(this.results[0])
+			},
+			width: function()
+			{
+				return adapter.width(this.results[0])
 			},
 			hasClass: function(name)
 			{
-				var value = adapter.css('class');
-				if (value)
-				{
-					var tokens = value.split(' ');
-					for (var c=0;c<tokens.length;c++)
-					{
-						if (tokens[c]==name)
-						{
-							return true;
-						}
-					}
-				}
-				return false;
+				return adapter.hasClass(this.results[0],name);
 			},
 			addClass: function(name)
 			{
-				var value = adapter.css('class');
-				if (!value)
-				{
-					adapter.css('class',name);
-					return this;
-				}
-				value = value + ' '+name;
-				adapter.css('class',value);
+				if (this.results == null)return;
+				adapter.addClass(this.results[0],name)
 				return this;
 			},
 			removeClass: function(name)
 			{
-				var value = adapter.css('class');
-				if (value)
-				{
-					var newtokens = [];
-					var tokens = value.split(' ');
-					for (var c=0;c<tokens.length;c++)
-					{
-						if (tokens[c]!=name)
-						{
-							newtokens.push(tokens[c]);
-						}
-					}
-					adapter.css('class',newtokens.join(' '));
-				}
+				adapter.removeClass(this.results[0],name)
 				return this;
 			},
 			show: function()
 			{
-				adapter.css(this.results[0],'display','');
+				adapter.css(this.results[0],'display','block');
+				swiss(this.results[0]).fire('show');
+
 				return this;
 			},
 			hide: function()
 			{
 				adapter.css(this.results[0],'display','none');
+				swiss(this.results[0]).fire('hide');
 				return this;
+			},
+			toggle: function()
+			{
+				swiss(this.results[0])[adapter.css(this.results[0], "display") == "none" ? "show" : "hide"]();
 			},
 			// --- SELECTOR
 			find: function(selector,context)
@@ -154,6 +163,14 @@
 				var r = [];
 				adapter.find(r,selector,context);
 				return this.setResults(r);
+			},
+			each:function (object,callback)
+			{
+				adapter.each(object,callback);					
+			},
+			extend:function (defaults,arguments)
+			{
+				return adapter.extend(defaults,arguments);
 			},
 			// --- HTML
 			html: function(content)
@@ -165,22 +182,55 @@
 				adapter.html(this.results[0],content);
 				return this;
 			},
+			// -- HANDLES draggable, droppable, resizaable, selectable, and sortable
+			interaction: function(type,options)
+			{
+				if (adapter[type](this.results[0],options)  == false)
+				{
+					return null;
+				}
+				else
+				{
+					return this;
+				}
+			},
+
 			// --- ANIMATIONS
 			effect: function(name,params)
 			{
-				adapter.effect(this.results[0],name,params);
-				return this;
+				if (this.results == null || adapter.effect(this.results[0],name,params) == false)
+					return null;
+				else	
+					return this;
 			},
 			// --- AJAX
 			ajax: function(params)
 			{
+			  swiss.extend({
+			    method: 'GET',
+			    url: '/',
+			    headers: {},
+			    data: null,
+			    success: function(){},
+			    error: function(){}
+			  }, params);
 				adapter.ajax(params);
 				return this;
 			},
+		  
+			interject: function(url, params, callback)
+			{
+				adapter.interject(this.results[0], url, params || {}, callback || function() {})
+			},
+		
 			// --- JSON
 			toJSON: function(value)
 			{
-				var object = value || this.results[0];
+				var object = value 
+				if (this.results)
+				{
+					object = this.results[0];
+				}
 				if (adapter.toJSON)
 				{
 					return adapter.toJSON(object);
@@ -211,22 +261,24 @@
 				}
 				return '{' + objects.join(', ') + '}';
 			},
-			evalJSON: function(value)
-			{
-				var object = value || this.results[0];
-				if (adapter.evalJSON)
-				{
-					return adapter.evalJSON(object);
-				}
-				try
-				{
-					return eval('(' + object + ')')
-				}
-				catch (E)
-				{
-					return null;
-				}
-			},
+
+			unfilterJSON: function(str,filter) {
+				var m = (filter ||  /^\/\*-secure-([\s\S]*)\*\/\s*$/).exec(str);
+				return m ? m[1] : str;
+		  	},
+
+		  	isJSON: function(s) {
+		    	var str = s.replace(/\\./g, '@').replace(/"[^"\\\n\r]*"/g, '');
+		    	return (/^[,:{}\[\]0-9.\-+Eaeflnr-u \n\r\t]*$/).test(str);
+		  	},
+
+		  	evalJSON: function(str,sanitize) {
+		    	var json = swiss.unfilterJSON(str);
+		    	try {
+		      		if (!sanitize || swiss.isJSON(json)) return eval('(' + json + ')');
+		    	} catch (e) { }
+		  	},
+			
 			// --- ONLOAD/UNLOAD
 			onload: function(fn)
 			{
@@ -241,12 +293,16 @@
 			// --- EVENTS 
 			fire: function(evt,params)
 			{
-				adapter.fire(this.results[0],evt,params);
+				adapter.fire(this.results[0],evt,params);					
 				return this;
 			},
 			on: function(name,params,fn)
 			{
-				adapter.on(this.results[0],name,params,fn);
+				// changed - will only work for a single element selector
+				//adapter.on(this.results[0],name,params,fn);
+				if (this.results == null) return;
+				adapter.on(this.results,name,params,fn);
+
 				return this;
 			},
 			un: function(name,fn)
@@ -254,13 +310,25 @@
 				adapter.un(this.results[0],name,fn);
 				return this;
 			},
+			toArray:function(value)
+			{
+				return adapter.toArray(value);
+			},
 			toString: function()
 			{
 				return '[swiss <'+(this.results ? this.results.length : 0)+'>]';
+			},
+			getMouseX: function(e)
+			{
+				return adapter.getMouseX(e)
+			},
+			getMouseY: function(e)
+			{
+				return adapter.getMouseY(e)
 			}
 		};
 		swiss.knife.init.prototype = swiss.knife;
-		var statics = ['version','toJSON','evalJSON'];
+		var statics = ['version','toJSON','getMouseX','getMouseY','evalJSON','unfilterJSON','isJSON','each','extend','toArray','ajax','find','onload','onunload'];
 		for (var c=0;c<statics.length;c++)
 		{
 			var name = statics[c];

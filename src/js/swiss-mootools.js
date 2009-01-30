@@ -61,6 +61,23 @@
 				return $(el).get('html');
 			}
 			$(el).set('html',content);
+		},
+		ajax:function(params)
+		{ 
+		  var myRequest = new Request({
+		    method: params['method'],
+		    url: params['url'],
+		    headers: params['headers'],
+		    data: params['data'],
+		    
+		  });
+		  myRequest.onSuccess = function(data, dataXml){
+		    params['success'](data);
+	    }
+		  myRequest.onFailure = function(xhr){
+		    params['error'](xhr);
+	    }
+		  myRequest.send();
 		}
 	});
 })(window.swiss);

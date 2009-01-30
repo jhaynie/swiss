@@ -5,15 +5,48 @@
  */
 (function(swiss)
 {
-	swissRegister("name","version",
+	swissRegister("name", "version",
 	{
 		find:function(results,selector,context)
+		{
+		},
+		each:function(array,callback)
+		{
+		},
+		extend:function(defaults,arguments)
+		{
+		},
+		appendElement:function(el,el2)
+		{
+		},
+		prependElement:function(el,el2)
+		{
+		},
+		appendHTML:function(el,html)
+		{
+		},
+		prependHTML:function(el,html)
+		{
+		},
+		insertHTMLAfter:function(el,html)
+		{
+		},
+		insertHTMLBefore:function(el,html)
 		{
 		},
 		attr:function(el,name,value)
 		{
 		},
-		removeAttr: function(el,name)
+		removeAttr:function(el,name)
+		{
+		},
+		hasClass:function(el,name)
+		{
+		},
+		addClass:function(el,name)
+		{
+		},
+		removeClass:function(el,name)
 		{
 		},
 		css:function(el,name,value)
@@ -22,17 +55,8 @@
 		html:function(el,content)
 		{
 		},
-		effect:function(el,name,params)
-		{
-		},
 		ajax:function(params)
-		{
-		},
-		toJSON:function(el)
-		{
-		},
-		evalJSON:function()
-		{
+		{ 
 		},
 		onload:function(fn)
 		{
@@ -47,6 +71,42 @@
 		{
 		},
 		un:function(el,name,fn)
+		{
+		},
+		toArray:function(value)
+		{
+		},
+		draggable:function(el,options)
+		{
+		},
+		sortable:function(el,options)
+		{
+		},
+		droppable:function(el,options)
+		{
+		},
+		selectable:function(el,options)
+		{
+		},
+		resizable:function(el,options)
+		{
+		},
+		effect:function(el,effect,options)
+		{
+		},
+		isUIEffect:function(effect)
+		{
+		},
+		isHideEffect:function(effect)
+		{
+		},
+		formatEffectOptions:function(effect,options)
+		{
+		},
+		height:function(el)
+		{
+		},
+		width:function(el)
 		{
 		}
 	});
