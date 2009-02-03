@@ -271,10 +271,20 @@
 			{
 				options.unselected = function(e,ui)
 				{
+
 					if (ui.unselected)
 						jQuery('#'+ui.unselected.id).trigger('unselected',[{event:e,ui:ui}])
 				}				
 			}
+			if (!options.unselecting)
+			{
+				options.unselecting = function(e,ui)
+				{
+					if (ui.unselecting)
+						jQuery('#'+ui.unselecting.id).trigger('unselecting',[{event:e,ui:ui}])
+				}				
+			}
+
 			jQuery(el)['selectable'](options);
 		},
 
