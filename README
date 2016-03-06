@@ -3,9 +3,11 @@ Swiss JS
 
 Swiss JS is a Javascript Framework Framework.  
 
+> This library is not maintained and should not be used. The JS world is much better now :)
+
 It's usefulness is mainly for higher-level framework developers who want to support
 multiple JS frameworks with their applications or components.  Beyond that, it 
-adds an extra layer of abstraction that you may not want for yoru application if you've
+adds an extra layer of abstraction that you may not want for your application if you've
 chosen a specific library and you love it.  However, if you'd like to have support
 for multiple libraries or you'd like to have a shield in your application - Swiss 
 might just do the job for you.
